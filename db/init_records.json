@@ -18,7 +18,7 @@
     {"date": "5/14/2024", "exercise": "lateral raise", "reps": 15, "weight": 15},
     {"date": "5/14/2024", "exercise": "lateral raise", "reps": 15, "weight": 15},
     {"date": "5/14/2024", "exercise": "lateral raise", "reps": 15, "weight": 15},
-    {"date": "5/14/2024", "exercise": "ateral raise", "reps": 15, "weight": 15},
+    {"date": "5/14/2024", "exercise": "lateral raise", "reps": 15, "weight": 15},
     {"date": "5/14/2024", "exercise": "push press", "reps": 1, "weight": 155},
     {"date": "5/14/2024", "exercise": "push jerk", "reps": 2, "weight": 155},
 
@@ -41,9 +41,9 @@
     {"date": "5/8/2024", "exercise": "barbell row palms down", "reps": 12, "weight": 95},
     {"date": "5/8/2024", "exercise": "barbell row palms down", "reps": 12, "weight": 95},
     {"date": "5/8/2024", "exercise": "barbell row palms down", "reps": 12, "weight": 115},
-    {"date": "5/8/2024", "exercise": "Single arm DB row", "reps": 12, "weight": 40, "comment": "tempo"},
-    {"date": "5/8/2024", "exercise": "Single arm DB row", "reps": 12, "weight": 40, "comment": "tempo"},
-    {"date": "5/8/2024", "exercise": "Single arm DB row", "reps": 12, "weight": 40, "comment": "tempo"},
+    {"date": "5/8/2024", "exercise": "single arm DB row", "reps": 12, "weight": 40, "comment": "tempo"},
+    {"date": "5/8/2024", "exercise": "single arm DB row", "reps": 12, "weight": 40, "comment": "tempo"},
+    {"date": "5/8/2024", "exercise": "single arm DB row", "reps": 12, "weight": 40, "comment": "tempo"},
 
     {"date": "2/12/2024", "exercise": "bench press", "reps": 9, "weight": 95, "comment": "tempo"},
     {"date": "2/12/2024", "exercise": "bench press", "reps": 9, "weight": 95, "comment": "tempo"},
