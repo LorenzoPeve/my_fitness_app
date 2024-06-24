@@ -121,26 +121,28 @@ def init_schema() -> None:
     );
     """)
     conn.commit()
+    conn.close()
 
 def add_users(username: str, password: str, email: str):
     conn = create_connection()
     cur = conn.cursor()
-    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-    hashed_email = bcrypt.hashpw(email.encode(), bcrypt.gensalt()).decode()
+    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode('utf-8')
+    hashed_email = bcrypt.hashpw(email.encode(), bcrypt.gensalt()).decode('utf-8')
     cur.execute("""
     INSERT INTO users (username, email, password) VALUES 
     (%s, %s, %s)
-    """, (username, hashed_email, hashed))
-
+    """, (username, hashed_email, hashed_password))
     conn.commit()
+    conn.close()
 
 
 if __name__ == "__main__":
 
     init_schema()
-    add_users('lorenpeve10', 'example@gmail.com', '123')
 
-    USERNAME = 'lorenpeve10'
+    USERNAME = os.getenv('TEST_USERNAME')
+    USERPASSWORD = os.getenv('TEST_USER_PASSWORD')
+    add_users(USERNAME, USERPASSWORD, 'example@gmail.com')
 
     with open("db/init_records.json", "r") as f:
         data = json.load(f)
@@ -164,3 +166,4 @@ if __name__ == "__main__":
         """, data)
 
         conn.commit()
+    conn.close()

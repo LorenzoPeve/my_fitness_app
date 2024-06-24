@@ -1,8 +1,6 @@
+import bcrypt
 from dotenv import load_dotenv
-import json
 import os
-import psycopg
-from psycopg import OperationalError
 from psycopg_pool import ConnectionPool
 
 load_dotenv(override=True)
@@ -118,3 +116,29 @@ def get_weightlifting_records(
             'comment': record[7]
         })
     return out
+
+def check_user_exists(username: str, password: str) -> bool:
+    """Check if the user exists in the database."""
+    
+    with POOL.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT password FROM users
+            WHERE username = %s
+            """, (username,)               
+        )
+
+        stored_hashed_password  = cur.fetchone()[0]
+        print(stored_hashed_password)
+        # print(type(hashed))
+        # print(hashed.encode())
+
+        print(password)
+
+        # print(bcrypt.checkpw(password.encode(), hashed.encode()))
+
+    if stored_hashed_password :
+        return bcrypt.checkpw(password.encode('utf-8'), stored_hashed_password.encode('utf-8'))
+    else:
+        return False

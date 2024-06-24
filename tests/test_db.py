@@ -1,9 +1,15 @@
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
 import random
 
 from app import db
 
-TEST_USERNAME = 'lorenpeve10'
+load_dotenv(override=True)
+
+TEST_USERNAME = os.getenv('TEST_USERNAME')
+TEST_USER_PASSWORD = os.getenv('TEST_USER_PASSWORD')
+print(TEST_USERNAME, TEST_USER_PASSWORD)
 
 def _get_number_of_records(username: str) -> int:
     with db.POOL.connection() as conn:
@@ -69,3 +75,8 @@ def test_get_weightlifting_records():
     records = db.get_weightlifting_records(TEST_USERNAME, 'deadlift')
     assert len(records) > 0
     assert records[0]['exercise'] == 'deadlift'
+
+def test_check_user_exists():
+    print(db.check_user_exists(TEST_USERNAME, TEST_USER_PASSWORD))
+    #assert db.check_user_exists(TEST_USERNAME, TEST_USER_PASSWORD)
+    #assert not db.check_user_exists(TEST_USERNAME, 'wrong_password')
