@@ -9,7 +9,6 @@ load_dotenv(override=True)
 
 TEST_USERNAME = os.getenv('TEST_USERNAME')
 TEST_USER_PASSWORD = os.getenv('TEST_USER_PASSWORD')
-print(TEST_USERNAME, TEST_USER_PASSWORD)
 
 def _get_number_of_records(username: str) -> int:
     with db.POOL.connection() as conn:
@@ -77,6 +76,19 @@ def test_get_weightlifting_records():
     assert records[0]['exercise'] == 'deadlift'
 
 def test_check_user_exists():
-    print(db.check_user_exists(TEST_USERNAME, TEST_USER_PASSWORD))
-    #assert db.check_user_exists(TEST_USERNAME, TEST_USER_PASSWORD)
-    #assert not db.check_user_exists(TEST_USERNAME, 'wrong_password')
+    assert db.check_user_exists(TEST_USERNAME, TEST_USER_PASSWORD)
+    assert not db.check_user_exists(TEST_USERNAME, 'wrong_password')
+
+def test_add_user():
+    username = 'test_user'
+    password = 'test_password'
+    email = 'test_email'
+    db.add_user(username, password, email)
+    assert db.check_user_exists(username, password)
+
+def test_delete_user():
+    username = 'test_user'
+    password = 'test_password'
+    assert db.check_user_exists(username, password)
+    db.delete_user(username)
+    assert not db.check_user_exists(username, password)

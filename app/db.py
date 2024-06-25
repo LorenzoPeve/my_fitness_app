@@ -117,6 +117,30 @@ def get_weightlifting_records(
         })
     return out
 
+def add_user(username: str, password: str, email: str) -> None:
+    """Add a user to the database."""
+
+    hashed_password = bcrypt.hashpw(
+        password.encode(), bcrypt.gensalt()).decode('utf-8')
+    hashed_email = bcrypt.hashpw(
+        email.encode(), bcrypt.gensalt()).decode('utf-8')
+
+    with POOL.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            INSERT INTO users (username, email, password)
+            VALUES (%s, %s, %s)
+            """, (username, hashed_email, hashed_password)
+        )
+
+def delete_user(username: str) -> None:
+    """Delete a user from the database."""
+
+    with POOL.connection() as conn:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM users WHERE username = %s", (username,))
+
 def check_user_exists(username: str, password: str) -> bool:
     """Check if the user exists in the database."""
     
@@ -129,16 +153,12 @@ def check_user_exists(username: str, password: str) -> bool:
             """, (username,)               
         )
 
-        stored_hashed_password  = cur.fetchone()[0]
-        print(stored_hashed_password)
-        # print(type(hashed))
-        # print(hashed.encode())
-
-        print(password)
-
-        # print(bcrypt.checkpw(password.encode(), hashed.encode()))
+        stored_hashed_password  = cur.fetchone()
 
     if stored_hashed_password :
-        return bcrypt.checkpw(password.encode('utf-8'), stored_hashed_password.encode('utf-8'))
+        return bcrypt.checkpw(
+            password.encode('utf-8'),
+            stored_hashed_password[0].encode('utf-8')
+        )
     else:
         return False
