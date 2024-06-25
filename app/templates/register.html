@@ -1,0 +1,94 @@
+{% extends "./base.html" %}
+
+{% block head %}
+<style>
+    .card-header {
+        color: #0738C1;
+        font-family: 'Bebas Neue', sans-serif;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Register</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('register') }}" method="post">
+                        <div class="mb-3">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" name="email" placeholder="sophie@example.com" required>
+                            <div id="emailHelp" class="form-text"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_password">Confirm Password</label>
+                            <input type="password"  class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                            <div id="passwordMessage" class="form-text" style="color: red;"></div>
+                        </div>
+                        {% if invalid_message %}
+                        <div class="alert-container">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{invalid_message}}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary btn-block" style="background-color: #0738C1; border: none;">Create Account</button>
+                    </form>
+                </div>
+                <div class="card-footer text-muted">
+                    <small class="text-muted">Already have an account? <a href="{{ url_for('login') }}" class="card-link">Login here</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_scripts %}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#email').on('focusout', function () {
+            var email = $('#email').val();
+            var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (emailRegex.test(email)) {
+                $('#emailHelp').text('Valid email address').css('color', 'green');
+            } else {
+                $('#emailHelp').text('Invalid email address').css('color', 'red');
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+            var passwordInput = document.getElementById("password");
+            var confirmPasswordInput = document.getElementById("confirm_password");
+            var messageBox = document.getElementById("passwordMessage");
+
+            function validatePassword() {
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    messageBox.innerHTML = "Passwords do not match!";
+                    confirmPasswordInput.setCustomValidity("Passwords do not match");
+                } else {
+                    messageBox.innerHTML = "";
+                    confirmPasswordInput.setCustomValidity("");
+                }
+            }
+
+            confirmPasswordInput.addEventListener("keyup", validatePassword);
+        });
+
+</script>
+{% endblock %}
