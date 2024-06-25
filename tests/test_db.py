@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
+import psycopg
 import random
 
 from app import db
@@ -85,6 +86,17 @@ def test_add_user():
     email = 'test_email'
     db.add_user(username, password, email)
     assert db.check_user_exists(username, password)
+
+def test_add_user_exception():
+    username = 'test_user'
+    password = 'test_password'
+    email = 'test_email'
+    try:
+        db.add_user(username, password, email)
+    except psycopg.errors.UniqueViolation as e:
+        assert 'duplicate key value violates unique constraint' in str(e)
+    else:
+        raise AssertionError('UniqueViolation not raised')
 
 def test_delete_user():
     username = 'test_user'
