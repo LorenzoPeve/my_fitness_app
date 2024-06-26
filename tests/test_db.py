@@ -76,16 +76,12 @@ def test_get_weightlifting_records():
     assert len(records) > 0
     assert records[0]['exercise'] == 'deadlift'
 
-def test_check_user_exists():
-    assert db.check_user_exists(TEST_USERNAME, TEST_USER_PASSWORD)
-    assert not db.check_user_exists(TEST_USERNAME, 'wrong_password')
-
 def test_add_user():
     username = 'test_user'
     password = 'test_password'
     email = 'test_email'
     db.add_user(username, password, email)
-    assert db.check_user_exists(username, password)
+    assert db.user_exists(username)
 
 def test_add_user_exception():
     username = 'test_user'
@@ -101,6 +97,43 @@ def test_add_user_exception():
 def test_delete_user():
     username = 'test_user'
     password = 'test_password'
-    assert db.check_user_exists(username, password)
+    assert db.user_exists(username)
     db.delete_user(username)
-    assert not db.check_user_exists(username, password)
+    assert not db.user_exists(username)
+
+def test_user_exists():
+    username = 'test_user'
+    password = 'test_password'
+    email = 'admin@admin.com'
+
+    assert not db.user_exists(username)
+    db.add_user(username, password, email)
+    assert db.user_exists(username)
+    db.delete_user(username)
+
+def test_email_exists():
+    username = 'test_user'
+    password = 'test_password'
+    email = 'admin@admin.com'
+    db.add_user(username, password, email)
+    assert db.email_exists(email)
+    assert not db.email_exists('this_does_not_exist@gmail.com')
+    db.delete_user(username)
+
+def test_login_credentials_exist():
+
+    assert db.login_credentials_exists(TEST_USERNAME, TEST_USER_PASSWORD)
+    
+    try:
+        db.login_credentials_exists('wrong_user', 'wrong_password')
+    except Exception as e:
+        assert 'User does not exist' in str(e)
+    else:
+        raise AssertionError('AssertionError not raised')
+    
+    try:
+        db.login_credentials_exists(TEST_USERNAME, 'wrong_password')
+    except Exception as e:
+        assert 'Password does not match' in str(e)
+    else:
+        raise AssertionError('AssertionError not raised')
