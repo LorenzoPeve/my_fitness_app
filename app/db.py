@@ -122,16 +122,14 @@ def add_user(username: str, password: str, email: str) -> None:
 
     hashed_password = bcrypt.hashpw(
         password.encode(), bcrypt.gensalt()).decode('utf-8')
-    hashed_email = bcrypt.hashpw(
-        email.encode(), bcrypt.gensalt()).decode('utf-8')
 
     with POOL.connection() as conn:
         cur = conn.cursor()
         cur.execute(
             """
-            INSERT INTO users (username, email, password)
+            INSERT INTO users (username, password, email)
             VALUES (%s, %s, %s)
-            """, (username, hashed_email, hashed_password)
+            """, (username, hashed_password, email)
         )
 
 def delete_user(username: str) -> None:
@@ -141,7 +139,25 @@ def delete_user(username: str) -> None:
         cur = conn.cursor()
         cur.execute("DELETE FROM users WHERE username = %s", (username,))
 
-def check_user_exists(username: str, password: str) -> bool:
+def user_exists(username: str) -> bool:
+    """Check if the user exists in the database."""
+
+    with POOL.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT username FROM users WHERE username = %s", (username,))
+        return cur.fetchone() is not None
+    
+def email_exists(email: str) -> bool:
+    """Check if the email exists in the database."""
+
+    with POOL.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT email FROM users WHERE email = %s", (email,))
+        return cur.fetchone() is not None
+
+def login_credentials_exists(username: str, password: str) -> bool:
     """Check if the user exists in the database."""
     
     with POOL.connection() as conn:
@@ -155,10 +171,18 @@ def check_user_exists(username: str, password: str) -> bool:
 
         stored_hashed_password  = cur.fetchone()
 
+    if stored_hashed_password is None:
+        raise Exception("User does not exist.")
+
     if stored_hashed_password :
-        return bcrypt.checkpw(
+        password_match = bcrypt.checkpw(
             password.encode('utf-8'),
             stored_hashed_password[0].encode('utf-8')
         )
-    else:
-        return False
+
+        if password_match:
+            return True
+        else:
+            raise Exception('Password does not match')
+
+    raise Exception('Condition not designed for')
