@@ -76,6 +76,23 @@ def test_get_weightlifting_records():
     assert len(records) > 0
     assert records[0]['exercise'] == 'deadlift'
 
+    reps_scheme = [record['reps'] for record in records]
+    assert len(set(reps_scheme)) > 1 # All records, regardless of reps are returned
+
+def test_get_weightlifting_records_invalid_ex():
+
+    records = db.get_weightlifting_records(TEST_USERNAME, 'no_such_exercise')
+    assert len(records) == 0
+
+def test_get_weightlifting_records_with_reps():
+
+    records = db.get_weightlifting_records(TEST_USERNAME, 'deadlift', 1)
+    assert len(records) > 0
+    assert records[0]['exercise'] == 'deadlift'
+
+    reps_scheme = [record['reps'] for record in records]
+    assert len(set(reps_scheme)) == 1 # All records, regardless of reps are returned
+
 def test_add_user():
     username = 'test_user'
     password = 'test_password'

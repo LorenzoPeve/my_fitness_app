@@ -86,22 +86,34 @@ def delete_exercise(ids: list[int]) -> None:
 
 def get_weightlifting_records(
         username: str,
-        exercise: str
+        exercise: str,
+        reps: int = None
     ) -> list[dict]:
 
     """Queries the database for weightlifting records for a given user and exercise."""
 
-    with POOL.connection() as conn:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            SELECT id, user_id, exercise, weight, reps, date, after_wod, comment
-            FROM weightlifting
-            WHERE user_id = %s
-            AND exercise = %s
-            ORDER BY date DESC
-            """, (username, exercise)               
-        )
+    if reps is not None:
+        with POOL.connection() as conn:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT id, user_id, exercise, weight, reps, date, after_wod, comment
+                FROM weightlifting
+                WHERE user_id = %s AND exercise = %s AND reps = %s
+                ORDER BY date DESC
+                """, (username, exercise, reps)
+            )
+    else:
+        with POOL.connection() as conn:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT id, user_id, exercise, weight, reps, date, after_wod, comment
+                FROM weightlifting
+                WHERE user_id = %s AND exercise = %s
+                ORDER BY date DESC
+                """, (username, exercise)
+            )
 
     out = []
     for record in cur:
