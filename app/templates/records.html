@@ -51,7 +51,7 @@
 {% if exercise %}
 <div class="container mt-4">
     <div class="row justify-content-center">        
-        <div class="col-md-4">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     <h4 class="mb-0">{{ exercise }}</h4>
@@ -62,17 +62,26 @@
                             No records for that exercise and reps!
                         </div>
                     {% else %}
-                        <ul>
-                            {% for record in records %}
-                            <li>
-                                <b>{{ record['date'] }}</b>&ensp;
-                                {{ record['weight'] }}&ensp;x&ensp;{{ record['reps'] }}&ensp;
-                                {% if record['comment'] %}
-                                    ({{ record['comment'] }})
-                                {% endif %}
-                            </li>
-                            {% endfor %}
-                        </ul>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Weight</th>
+                                    <th>Reps</th>
+                                    <th>Comment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in records %}
+                                <tr>
+                                    <td>{{ record.date }}</td>
+                                    <td>{{ record.weight }}</td>
+                                    <td>{{ record.reps }}</td>
+                                    <td>{{ record.comment or '' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     {% endif %}
                 </div>
             </div>
@@ -80,4 +89,5 @@
     </div>
 </div>
 {% endif %}
+
 {% endblock %}
