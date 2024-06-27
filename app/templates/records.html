@@ -54,7 +54,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0">{{exercise}}</h4>
+                    <h4 class="mb-0">{{ exercise }}</h4>
                 </div>
                 <div class="card-body">
                     {% if records|length == 0 %}
@@ -65,10 +65,10 @@
                         <ul>
                             {% for record in records %}
                             <li>
-                                <b>{{record['date']}}</b>&ensp;
-                                {{record['weight']}}&ensp;x&ensp;{{record['reps']}}&ensp;
-                                { % if record['comment'] %}
-                                    ({{record['comment']}})
+                                <b>{{ record['date'] }}</b>&ensp;
+                                {{ record['weight'] }}&ensp;x&ensp;{{ record['reps'] }}&ensp;
+                                {% if record['comment'] %}
+                                    ({{ record['comment'] }})
                                 {% endif %}
                             </li>
                             {% endfor %}
