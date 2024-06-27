@@ -1,16 +1,109 @@
-<!-- templates/index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Flask Form</title>
-</head>
-<body>
-    <h2>Enter Your Name</h2>
-    <form action="/" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html>
+{% extends "./base.html" %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+    #welcome_title {
+        font-family: 'Bebas Neue', sans-serif;
+        color: #f3f3f3;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 28vh;
+    }
+
+    h1 {
+        font-size: 4em;
+        margin-bottom: -30px;
+    }
+
+    .welcome_message {
+        font-family: 'Oswald', sans-serif;
+        font-size: 21px;
+        text-align: center;
+        color: #f3f3f3;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<!-- Title -->
+<h1 id="welcome_title">Fitness Logging Made Easier</h1>
+<p class="welcome_message">
+    Log your exercises, weights, and reps effortlessly with our modern fitness tracking app.
+</p>
+<p class="welcome_message">
+    Start your fitness journey today!
+</p>
+
+<!-- Cards -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <!-- Card 1 -->
+        <div class="col-md-4 mt-2">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-info-circle-fill mr-2"></i><b>What is Fitness Tracker?</b></h5>
+                    <p class="card-text">
+                    Your fitness data at your fingertips. Crafted by fitness
+                    enthusiasts for fitness enthusiasts. The best tracking
+                    features with a minimalist and easy-to-use interface.    
+                    <br><br>
+                    <b><i>Say goodbye to your old-school workout journal.</i></b>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-4 mt-2">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-clipboard2-data-fill mr-2"></i><b>Simple yet Powerful</b></h5>
+                    <p class="card-text">
+                    A workout log should be quick and easy to use without getting in your way or slowing you down.  
+                    <br><br><br>
+                    <b><i>Other workout apps take a simple thing and overcomplicate it.</i></b>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <!-- Card 3 -->
+        <div class="col-md-4 mt-2">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people-fill mr-2"></i><b>Connect and Compare</b></h5>
+                    <p class="card-text">                   
+                    Connect with your fitness buddies.
+                    Whether you're challenging or cheering each other, our app makes
+                    the fitness journey a shared adventure.
+                    <br><br>
+                    <b><i>Fitness is more fun with friends!</b></i>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="col-md-4 mt-2">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-shield-lock mr-2"></i><b>Data Privacy</b></h5>
+                    <p class="card-text">
+                        We prioritize your data privacy and security.
+                        Easily export your data from our platform.
+                        Whenever you wish, you can request the removal of your data from our systems.
+                        <br><br>
+                        <b><i>Control your data. Opt to be forgotten.</i></b>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<p>
+
+</p>
+{% endblock %}
