@@ -31,15 +31,15 @@
                 </div>
                 <div class="card-body">
                     <form action="{{ url_for('my_records') }}" method="post">
-
+                        <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
                         <div class="row mb-3">
                             <label for="exercise"><b>Exercise</b></label>
-                            <input type="text" class="form-control" name="exercise" id="exercise" placeholder="" autocomplete="off">
+                            <input type="text" class="form-control" name="exercise" id="exercise" value="{{ session['my_records_exercise'] }}" placeholder="" autocomplete="off" required>
                             <div class="list-group" id="exercise_list"></div>
                         </div>
                         <div class="row mb-3">
                             <label for="n_reps"><b>Reps</b></label>
-                            <input type="number" class="form-control" id="n_reps" name="n_reps" step="1" min="1" autocomplete="off"/>
+                            <input type="number" class="form-control" value="{{ session['my_records_reps'] }}" id="n_reps" name="n_reps" step="1" min="1" autocomplete="off"/>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block" style="background-color: #0738C1; border: none;">Get History</button>
                     </form>
@@ -48,13 +48,13 @@
         </div>
     </div>
 </div>
-{% if exercise %}
+{% if session['my_records_exercise'] %}
 <div class="container mt-4">
     <div class="row justify-content-center">        
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0">{{ exercise }}</h4>
+                    <h4 class="mb-0">{{ session['my_records_exercise'] }}</h4>
                 </div>
                 <div class="card-body">
                     {% if records|length == 0 %}
@@ -62,26 +62,32 @@
                             No records for that exercise and reps!
                         </div>
                     {% else %}
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Weight</th>
-                                    <th>Reps</th>
-                                    <th>Comment</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for record in records %}
-                                <tr>
-                                    <td>{{ record.date }}</td>
-                                    <td>{{ record.weight }}</td>
-                                    <td>{{ record.reps }}</td>
-                                    <td>{{ record.comment or '' }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                        <form action="{{ url_for('delete_records') }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">                           
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Weight</th>
+                                        <th>Reps</th>
+                                        <th>Comments</th>
+                                        <th>Select</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in records %}
+                                    <tr>
+                                        <td>{{ record.date }}</td>
+                                        <td>{{ record.weight }}</td>
+                                        <td>{{ record.reps }}</td>
+                                        <td>{{ record.comment or '' }}</td>
+                                        <td><input type="checkbox" name="recs_delete" value="{{ record.id }}" class="record-checkbox"></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-danger" id="deleteButton" style="display: none;">Delete Selected Records</button>
+                        </form>
                     {% endif %}
                 </div>
             </div>
@@ -89,5 +95,23 @@
     </div>
 </div>
 {% endif %}
+{% endblock %}
 
+{% block js_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.record-checkbox');
+    const deleteButton = document.getElementById('deleteButton');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (Array.from(checkboxes).some(checkbox => checkbox.checked)) {
+                deleteButton.style.display = 'inline-block';
+            } else {
+                deleteButton.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

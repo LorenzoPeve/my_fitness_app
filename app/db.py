@@ -78,7 +78,12 @@ def delete_exercise(ids: list[int], user: str) -> None:
     for i in ids:
         s+= str(i) + ', '
 
-    query = f"DELETE FROM weightlifting WHERE id in ({s[:-2]}) AND user_id = '{user}'"
+    s = s[:-2]
+
+    if len(s) == 0:
+        raise Exception("No records selected for deletion.")
+
+    query = f"DELETE FROM weightlifting WHERE id in ({s}) AND user_id = '{user}'"
 
     with POOL.connection() as conn:
         cur = conn.cursor()
