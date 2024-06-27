@@ -71,14 +71,14 @@ def add_exercise(
             """, (user_id, exercise, weight, reps, date, after_wod, comment)
         )
 
-def delete_exercise(ids: list[int]) -> None:
+def delete_exercise(ids: list[int], user: str) -> None:
     """Delete an exercise from the database."""
 
     s = ''
     for i in ids:
         s+= str(i) + ', '
 
-    query = f"DELETE FROM weightlifting WHERE id in ({s[:-2]})"
+    query = f"DELETE FROM weightlifting WHERE id in ({s[:-2]}) AND user_id = '{user}'"
 
     with POOL.connection() as conn:
         cur = conn.cursor()
@@ -92,7 +92,7 @@ def get_weightlifting_records(
 
     """Queries the database for weightlifting records for a given user and exercise."""
 
-    if reps is not None:
+    if reps is not None and len(str(reps)) > 0:
         with POOL.connection() as conn:
             cur = conn.cursor()
             cur.execute(

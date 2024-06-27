@@ -52,7 +52,7 @@ def test_add_exercise():
     # Delete newly inserted exercise
     exercises = db.get_weightlifting_records(TEST_USERNAME, exercise_name)
     id_to_delete = exercises[0]['id']
-    db.delete_exercise([id_to_delete])
+    db.delete_exercise([id_to_delete], TEST_USERNAME)
 
 def test_delete_exercise():
 
@@ -65,7 +65,7 @@ def test_delete_exercise():
     exercises = db.get_weightlifting_records(TEST_USERNAME, name)
     ids = [exercise['id'] for exercise in exercises[:3]]
 
-    db.delete_exercise(ids)
+    db.delete_exercise(ids, TEST_USERNAME)
     
     n_new = _get_number_of_records(TEST_USERNAME)
     assert n_new == n_old - len(ids)
