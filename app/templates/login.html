@@ -1,0 +1,48 @@
+{% extends "./base.html" %}
+
+{% block head %}
+<style>
+    .card-header {
+        color: #0738C1;
+        font-family: 'Bebas Neue', sans-serif;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Login</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('login') }}" method="post">
+                        <div class="mb-3">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
+                        </div>
+                        {% if invalid_message %}
+                        <div class="alert-container">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ invalid_message }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary btn-block" style="background-color: #0738C1; border: none;">Login</button>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">New user? <a href="{{ url_for('register') }}" class="card-link">Start your journey here</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
