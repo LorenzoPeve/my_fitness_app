@@ -121,7 +121,7 @@ def get_weightlifting_records(
             'id': record[0],
             'user_id': record[1],
             'exercise': record[2],
-            'weight': record[3],
+            'weight': str(record[3]).replace('.0', ''),
             'reps': record[4],
             'date': record[5],
             'after_wod': record[6],
