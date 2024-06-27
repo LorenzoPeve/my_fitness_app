@@ -1,0 +1,83 @@
+{% extends "./base.html" %}
+
+{% block head %}
+<style>
+    .card-header {
+    color: #0738C1;
+    font-family: 'Bebas Neue', sans-serif;
+    }
+
+    .btn-outline-primary {
+        color: rgba(0, 0, 0, 0.8);
+        border-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .list-group-item:hover {
+        text-decoration: none;
+        color: white;
+        background-color: #0738C1;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">History</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('my_records') }}" method="post">
+
+                        <div class="row mb-3">
+                            <label for="exercise"><b>Exercise</b></label>
+                            <input type="text" class="form-control" name="exercise" id="exercise" placeholder="" autocomplete="off">
+                            <div class="list-group" id="exercise_list"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="n_reps"><b>Reps</b></label>
+                            <input type="number" class="form-control" id="n_reps" name="n_reps" step="1" min="1" autocomplete="off"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" style="background-color: #0738C1; border: none;">Get History</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% if exercise %}
+<div class="container mt-4">
+    <div class="row justify-content-center">        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{exercise}}</h4>
+                </div>
+                <div class="card-body">
+                    {% if records|length == 0 %}
+                        <div class="alert alert-warning h-50" role="alert">
+                            No records for that exercise and reps!
+                        </div>
+                    {% else %}
+                        <ul>
+                            {% for record in records %}
+                            <li>
+                                <b>{{record['date']}}</b>&ensp;
+                                {{record['weight']}}&ensp;x&ensp;{{record['reps']}}&ensp;
+                                { % if record['comment'] %}
+                                    ({{record['comment']}})
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
