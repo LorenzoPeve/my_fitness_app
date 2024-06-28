@@ -70,6 +70,38 @@ def test_delete_exercise():
     n_new = _get_number_of_records(TEST_USERNAME)
     assert n_new == n_old - len(ids)
 
+def test_add_exercise_multiple_times():
+
+    # Before adding an exercise
+    exercise_name = 'test12345'
+    exercises = db.get_list_of_exercises(TEST_USERNAME)
+    assert exercise_name not in exercises
+
+    N = 5
+    # Add an exercise
+    db.add_exercise_multiple_times(
+        N,
+        user_id=TEST_USERNAME,
+        exercise=exercise_name,
+        weight=100,
+        reps=10,
+        date=datetime.now().date() + timedelta(days=1),
+        after_wod=False,
+        comment=''
+    )
+
+    exercises = db.get_list_of_exercises(TEST_USERNAME)
+    assert exercise_name in exercises
+
+    # Delete newly inserted exercise
+    exercises = db.get_weightlifting_records(TEST_USERNAME, exercise_name)
+
+    ids = [exercise['id'] for exercise in exercises[:N]]
+    db.delete_exercise(ids, TEST_USERNAME)
+
+    id_to_delete = exercises[0]['id']
+    db.delete_exercise([id_to_delete], TEST_USERNAME)
+
 def test_get_weightlifting_records():
 
     records = db.get_weightlifting_records(TEST_USERNAME, 'deadlift')
