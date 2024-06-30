@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FitnessTracker</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bebas Neue:400,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:400,700&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+    body {
+        background-color: #333;
+        color: #f3f3f3;
+    }
+    </style>
+{% block head %}
+{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg" style="background-color: #0738C1">
+        <div class="container-fluid">
+            <a class="navbar-brand pl-4" href="/" style="color: white; font-family: 'Bebas Neue', sans-serif;">Fitness Tracker</a>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if not session['username'] %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('login') }}" style="color: white; font-family: 'Roboto', sans-serif;">Login</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="" style="color: white; font-family: 'Roboto', sans-serif;">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('my_records') }}" style="color: white; font-family: 'Roboto', sans-serif;">My records</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('add_records') }}" style="color: white; font-family: 'Roboto', sans-serif;">Add Exercise</a>
+                </li>
+                {% endif %}
+            </ul>
+          </div>
+          {% if session['username'] %}
+            <div class="navbar-brand d-flex align-items-center">
+              <i class="bi bi-person-circle" style="color: white;"></i>
+              <span class="pl-2 mr-4" style="color: white; font-family: 'Roboto', sans-serif; font-size: 0.8rem;">Hi, {{session['username']}}</span>
+              <a href="{{ url_for('logout') }}" class="nav-link" style="color: white; font-family: 'Roboto', sans-serif; font-size: 0.8rem;">Logout</a>
+            </div>
+          {% endif %}
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="bi bi-grid-3x3-gap-fill"></span>
+          </button>
+        </div>
+      </nav>
+    
+    {% block content %}
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    {% block js_scripts %}
+    {% endblock %}
+
+</body>
+</html>
