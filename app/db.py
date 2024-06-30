@@ -5,19 +5,22 @@ from psycopg_pool import ConnectionPool
 
 load_dotenv(override=True)
 
-conn_string = (
-    f"host={os.getenv('DB_HOST')} "
-    f"port={os.getenv('DB_PORT')} "
-    f"dbname={os.getenv('DB_NAME')} "
-    f"user={os.getenv('DB_USER')} "
-    f"password={os.getenv('DB_PASSWORD')}"
-)
-
-POOL = ConnectionPool(
-    conninfo=conn_string,
-    open=True,
-    min_size=3
+try:
+    conn_string = (
+        f"host={os.getenv('DB_HOST')} "
+        f"port={os.getenv('DB_PORT')} "
+        f"dbname={os.getenv('DB_NAME')} "
+        f"user={os.getenv('DB_USER')} "
+        f"password={os.getenv('DB_PASSWORD')}"
     )
+
+    POOL = ConnectionPool(
+        conninfo=conn_string,
+        open=True,
+        min_size=3
+        )
+except Exception as e:
+    raise Exception(f"Error initializing the database connection pool: {e}")
 
 def set_inputs_to_none_if_empty(func):
     """Decorator that sets empty strings to None in function arguments."""
