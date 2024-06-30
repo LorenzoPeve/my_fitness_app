@@ -63,7 +63,7 @@
                         </div>
                     {% else %}
                         <form action="{{ url_for('delete_records') }}" method="POST">
-                            <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">                           
+                            <input type="hidden" id="csrf_token" name="csrf_token" value="{{ session['csrf_token'] }}">                           
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -113,5 +113,76 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+const root_url = location.protocol + '//' + location.host;
+const csrf_token = document.getElementById('csrf_token').value;
+
+async function fetchExercises() {
+    try {
+        const response = await fetch(root_url + '/get_records', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: new URLSearchParams({
+                'csrf_token': csrf_token,
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`${response.status} ${response.statusText}: ${errorData.error}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching records:', error);
+        throw error; // rethrow the error so the caller can handle it
+    }
+}
+
+async function initialize() {
+    try {
+        const availableExercises = await fetchExercises();
+        const exercise_input_box = document.getElementById('exercise');
+        const exercise_list = document.getElementById("exercise_list");
+
+        exercise_input_box.onkeyup = function () {
+            let result = [];
+            let input = exercise_input_box.value;
+
+            if (input.length) {
+                result = availableExercises.filter((keyword) => {
+                    return keyword.toLowerCase().includes(input.toLowerCase());
+                });
+
+                exercise_list.innerHTML = display(result);
+            } else {
+                exercise_list.innerHTML = '';
+            }
+        };
+
+        function display(result) {
+            const content = result.map((option) => {
+                return '<a class="list-group-item" onclick="selectInput(this)">' + option + '</a>';
+            }).join('');
+            return content;
+        }
+
+    } catch (error) {
+        console.error('Error initializing:', error);
+    }
+}
+
+function selectInput(option) {
+    const exercise_input_box = document.getElementById('exercise');
+    exercise_input_box.value = option.innerHTML;
+    const exercise_list = document.getElementById("exercise_list");
+    exercise_list.innerHTML = '';
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    initialize();
+});
+
 </script>
 {% endblock %}
