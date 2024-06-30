@@ -31,7 +31,7 @@
                 </div>
                 <div class="card-body">
                     <form action="{{ url_for('my_records') }}" method="post">
-                        <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
+                        <input type="hidden" id="csrf_token" name="csrf_token" value="{{ session['csrf_token'] }}">
                         <div class="row mb-3">
                             <label for="exercise"><b>Exercise</b></label>
                             <input type="text" class="form-control" name="exercise" id="exercise" value="{{ session['my_records_exercise'] }}" placeholder="" autocomplete="off" required>
