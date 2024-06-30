@@ -35,6 +35,7 @@
     {"date": "2/12/2024", "exercise": "pull up", "reps": 7, "weight": 5, "comment": "tempo"},
     {"date": "2/12/2024", "exercise": "pull up", "reps": 7, "weight": 5, "comment": "tempo"},
     {"date": "2/12/2024", "exercise": "pull up", "reps": 5, "weight": 10, "comment": "tempo"},
+    {"date": "6/28/2024", "exercise": "pull up", "reps": 3, "weight": 60, "comment": "max"},
     {"date": "5/8/2024", "exercise": "wide grip pull up", "reps": 6, "weight": 15, "comment": "tempo"},
     {"date": "5/8/2024", "exercise": "wide grip pull up", "reps": 6, "weight": 15, "comment": "tempo"},
     {"date": "5/8/2024", "exercise": "wide grip pull up", "reps": 6, "weight": 15, "comment": "tempo"},
@@ -112,5 +113,6 @@
     {"date": "5/10/2024", "exercise": "ring dips", "reps": 15, "weight": 0},
     {"date": "5/20/2024", "exercise": "bench press", "reps": 5, "weight": 145, "comment": "tempo"},
     {"date": "5/20/2024", "exercise": "bench press", "reps": 5, "weight": 145, "comment": "tempo"},
-    {"date": "5/20/2024", "exercise": "bench press", "reps": 5, "weight": 145, "comment": "tempo"}
+    {"date": "5/20/2024", "exercise": "bench press", "reps": 5, "weight": 145, "comment": "tempo"},
+    {"date": "6/25/2024", "exercise": "bench press", "reps": 3, "weight": 180, "comment": "max"}
 ]
