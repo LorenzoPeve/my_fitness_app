@@ -62,7 +62,6 @@ def add_exercise(
 
     with POOL.connection() as conn:
         cur = conn.cursor()
-
         cur.execute(
             """
             INSERT INTO weightlifting
@@ -70,6 +69,42 @@ def add_exercise(
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             """, (user_id, exercise, weight, reps, date, after_wod, comment)
         )
+        conn.commit()
+
+@set_inputs_to_none_if_empty
+def add_exercise_multiple_times(
+    n_sets: int,
+    user_id: str,
+    exercise: str,
+    weight: float,
+    reps: int,
+    date: str,
+    after_wod: bool,
+    comment: str,
+) -> None: 
+    
+    """
+    Convenience function to add an exercise multiple times for cases when
+    lifter does many sets of the same exercise at the same weight (5x5, 8x3).
+    """
+    assert float(weight)
+    assert int(reps)
+
+    values = [
+        (user_id, exercise, weight, reps, date, after_wod, comment)
+        for _ in range(n_sets)
+    ]
+
+    with POOL.connection() as conn:
+        cur = conn.cursor()
+        cur.executemany(
+            """
+            INSERT INTO weightlifting
+            (user_id, exercise, weight, reps, date, after_wod, comment)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, values
+        )
+        conn.commit()
 
 def delete_exercise(ids: list[int], user: str) -> None:
     """Delete an exercise from the database."""
@@ -133,6 +168,20 @@ def get_weightlifting_records(
             'comment': record[7]
         })
     return out
+
+def get_list_of_exercises(username: str) -> list[str]:
+    """Return a list of exercises for a given user."""
+
+    with POOL.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT DISTINCT exercise FROM weightlifting
+            WHERE user_id = %s
+            """, (username,)               
+        )
+
+    return [s[0] for s in sorted(cur.fetchall())]
 
 def add_user(username: str, password: str, email: str) -> None:
     """Add a user to the database."""
