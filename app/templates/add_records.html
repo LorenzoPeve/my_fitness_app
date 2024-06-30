@@ -1,0 +1,194 @@
+{% extends './base.html' %}
+{% block head %}
+<style>
+    .card-header {
+    color: #0738C1;
+    font-family: 'Bebas Neue', sans-serif;
+    }
+
+    .btn-outline-primary {
+        color: rgba(0, 0, 0, 0.8);
+        border-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .list-group-item:hover {
+        text-decoration: none;
+        color: white;
+        background-color: #0738C1;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Add Exercise</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('add_records') }}" method="POST">
+                        <input type="hidden" id="csrf_token" name="csrf_token" value="{{ session['csrf_token'] }}">
+                        {% if message_type == 'success' %}
+                            <div class="alert alert-success p-2" role="alert">
+                                Exercise recorded!
+                            </div>
+                        {% elif message_type == 'exception' %}
+                            {% if message %}
+                                <div class="alert alert-danger p-2" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-danger p-2" role="alert">
+                                    Invalid submission. Try again.
+                                </div>
+                            {% endif %}
+                        {% endif %}
+						<!-- Date -->
+                        <div class="mb-3">
+                            <label for="date"><b>When</b></label>
+                            <input type="date" class="form-control" id="date" name="date" required />
+                        </div>
+                        
+                        <!-- Input for WEIGHTLIFTING exercise Type Radio Buttons Grid -->
+                        <div id='weightlifting_input'>
+                            <input type="hidden" name="exercise_type" value="weight_reps">
+                            <div class="mb-3">
+                                <label for="exercise"><b>Exercise</b></label>
+                                <input type="text" class="form-control" name="exercise" id="exercise" placeholder="" autocomplete="off">
+                                <div class="list-group" id="exercise_list"></div>
+                                <div id="exercise_name_too_long" style="color: red; display: none;">Character limit of 30 exceeded.</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="weight"><b>Weight</b></label>
+                                    <input type="number" class="form-control" id="weight" name="weight" step="any" min="0" required autocomplete="off"/>
+                                </div>
+                                <div class="col">
+                                    <label for="n_reps"><b>Reps</b></label>
+                                    <input type="number" class="form-control" id="n_reps" name="n_reps" step="1" min="1" autocomplete="off"/>
+                                </div>
+                                <div class="col">
+                                    <label for="n_sets"><b>Sets</b></label>
+                                    <input type="number" class="form-control" id="n_sets" name="n_sets" step="1" value="1" autocomplete="off"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" name="is_after_wod">
+                                <label class="form-check-label" for="is_after_wod"><b>Done after WOD?</b></label>
+                            </div>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="activity_comments"><b>Comments</b></label>
+                            <textarea class="form-control" name="activity_comments" rows="1" autocomplete="off"></textarea>
+                        </div>
+                        <div id="validator" class="form-text mb-2" style="color: red;"></div>
+                        <button type="submit" class="btn btn-primary btn-block" style="background-color: #0738C1; border: none;">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var currentDate = new Date().toISOString().split('T')[0];
+    document.getElementById("date").value = currentDate;
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  
+  const exerciseInput = document.getElementById("exercise");
+  const exerciseError = document.getElementById("exercise_name_too_long");
+
+  exerciseInput.addEventListener("input", function() {
+      const inputValue = exerciseInput.value.trim();
+
+      if (inputValue.length > 30) {
+        exerciseError.style.display = "block";
+      } else {
+        exerciseError.style.display = "none";
+      }
+  });
+});
+
+
+const root_url = location.protocol + '//' + location.host;
+const csrf_token = document.getElementById('csrf_token').value;
+
+async function fetchExercises() {
+    try {
+        const response = await fetch(root_url + '/get_records', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: new URLSearchParams({
+                'csrf_token': csrf_token,
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`${response.status} ${response.statusText}: ${errorData.error}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching records:', error);
+        throw error; // rethrow the error so the caller can handle it
+    }
+}
+
+async function initialize() {
+    try {
+        const availableExercises = await fetchExercises();
+        const exercise_input_box = document.getElementById('exercise');
+        const exercise_list = document.getElementById("exercise_list");
+
+        exercise_input_box.onkeyup = function () {
+            let result = [];
+            let input = exercise_input_box.value;
+
+            if (input.length) {
+                result = availableExercises.filter((keyword) => {
+                    return keyword.toLowerCase().includes(input.toLowerCase());
+                });
+
+                exercise_list.innerHTML = display(result);
+            } else {
+                exercise_list.innerHTML = '';
+            }
+        };
+
+        function display(result) {
+            const content = result.map((option) => {
+                return '<a class="list-group-item" onclick="selectInput(this)">' + option + '</a>';
+            }).join('');
+            return content;
+        }
+
+    } catch (error) {
+        console.error('Error initializing:', error);
+    }
+}
+
+function selectInput(option) {
+    const exercise_input_box = document.getElementById('exercise');
+    exercise_input_box.value = option.innerHTML;
+    const exercise_list = document.getElementById("exercise_list");
+    exercise_list.innerHTML = '';
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    initialize();
+});
+
+</script>
+{% endblock %}
