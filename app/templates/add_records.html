@@ -98,7 +98,9 @@
 {% block js_scripts %}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    var currentDate = new Date().toISOString().split('T')[0];
+    var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: timeZone };
+    var currentDate = new Date().toLocaleDateString('en-CA', options);
     document.getElementById("date").value = currentDate;
 });
 
