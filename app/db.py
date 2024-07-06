@@ -59,9 +59,12 @@ def add_exercise(
 ) -> None:
     
     """Add an exercise to the database for a given user."""
+    try:
+        weight = float(weight)
+    except ValueError:
+        raise ValueError("Weight must be a number.")
 
-    assert float(weight)
-    assert int(reps)
+    assert int(reps) >= 1, 'Reps must be a positive integer.'
 
     with POOL.connection() as conn:
         cur = conn.cursor()
@@ -90,7 +93,10 @@ def add_exercise_multiple_times(
     Convenience function to add an exercise multiple times for cases when
     lifter does many sets of the same exercise at the same weight (5x5, 8x3).
     """
-    assert float(weight)
+    try:
+        weight = float(weight)
+    except ValueError:
+        raise ValueError("Weight must be a number.")
     assert int(reps)
 
     values = [
