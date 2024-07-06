@@ -149,7 +149,7 @@ def get_weightlifting_records(
                 SELECT id, user_id, exercise, weight, reps, date, after_wod, comment
                 FROM weightlifting
                 WHERE user_id = %s AND exercise = %s AND reps = %s
-                ORDER BY date DESC
+                ORDER BY date DESC, weight DESC
                 """, (username, exercise, reps)
             )
     else:
